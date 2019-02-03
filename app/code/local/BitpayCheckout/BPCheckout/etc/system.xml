@@ -84,7 +84,7 @@
               <sort_order>3</sort_order>
                <comment><![CDATA[If this is set to <b>Redirect</b>, then the customer will be redirected to <b>BitPay</b> to checkout, and return to the checkout page once the payment is made.<br><br>If this is set to <b>Popup Modal</b>, the user will stay on your e-commerce site and complete the transaction.]]></comment>
             </bitpay_ux>
-
+            <!--
             <bitpay_message translate="label">
               <label>Checkout Message</label>
               <frontend_type>textarea</frontend_type>
@@ -95,6 +95,7 @@
               <sort_order>3</sort_order>
                <comment><![CDATA[Insert your custom message for the <b>Order Received</b> page, so the customer knows that the order will not be completed until BitPay releases the funds.]]></comment>
             </bitpay_message>
+            -->
             
             <order_status translate="label">
               <label>New order status</label>

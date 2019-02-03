@@ -199,7 +199,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
            
             
             $orderStatus = json_decode($invoice->checkInvoiceStatus($order_invoice));
-            if ($orderStatus->data->status == 'complete'):
+
+            switch($orderStatus->data->status){
+                case 'complete':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
 
@@ -213,11 +215,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 Mage_Sales_Model_Order::STATE_COMPLETE);
                 $order->save();
                 return true;
-                
+                break;
 
-            endif;
-
-            if ($orderStatus->data->status == 'confirmed'):
+                case 'confirmed':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
 
@@ -231,11 +231,10 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 Mage_Sales_Model_Order::STATE_PROCESSING);
                 $order->save();
                 return true;
-                
+                break;
 
-            endif;
-
-            if ($orderStatus->data->status == 'paid'):
+                case 'paid':
+                default:
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
 
@@ -246,11 +245,45 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 Mage_Sales_Model_Order::STATE_PROCESSING);
 
                 return true;
+               
+                break;
 
-            endif;
+                case 'invalid':
+                #load the order to update
+                $order = new Mage_Sales_Model_Order();
 
-        else:
-            return false;
-        endif;
+                #test orderid
+                #$orderid = '100000319';
+                $order->loadByIncrementId($orderid);
+                
+
+                #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
+                $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> has become invalid because of network congestion.  Order will automatically update when the status changes.',
+                Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+                $order->save();
+                return true;
+                break;
+
+                case 'expired':
+                #load the order to update
+                $order = new Mage_Sales_Model_Order();
+
+                #test orderid
+                #$orderid = '100000319';
+                $order->loadByIncrementId($orderid);
+                
+
+                #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
+                $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> has expired, order has been canceled.',
+                Mage_Sales_Model_Order::STATE_CANCELED);
+                $order->save();
+                return true;
+                break;
+
+
+
+
+            }
+
     }
 }
