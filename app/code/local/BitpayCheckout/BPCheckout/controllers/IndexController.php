@@ -284,6 +284,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
 
             }
-
+        endif;
     }
 }
