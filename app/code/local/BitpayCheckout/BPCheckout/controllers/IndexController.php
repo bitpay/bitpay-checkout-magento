@@ -292,6 +292,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
     public function getExtensionVersion()
 {
-    return (string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
+    return 'BitPay Checkout - '.(string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
 }
 }
