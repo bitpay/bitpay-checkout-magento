@@ -24,13 +24,13 @@ function checkInvoiceStatus($orderID){
 function createInvoice(){
    #setup some curl
    $post_fields = json_encode($this->item->item_params);
+  
    
-   
-   $pluginInfo = 'BitPay Checkout 2.0 - Magento';
+   $pluginInfo = $this->item->item_params->extension_version;
    $request_headers = array();
    $request_headers[] = 'X-BitPay-Plugin-Info: '. $pluginInfo;
    $request_headers[] = 'Content-Type: application/json';
-
+   
    $ch = curl_init();
    curl_setopt($ch, CURLOPT_URL, 'https://'.$this->item->item_params->invoice_endpoint);
    curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);

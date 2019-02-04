@@ -41,6 +41,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
         //create an item, should be passed as an object'
         $params = new stdClass();
+        $params->extension_version = $this->getExtensionVersion();
         $params->price = $order->base_grand_total;
         $params->currency = $order->base_currency_code; //set as needed
 
@@ -191,7 +192,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             #$order_invoice = 'VWtKRnryKGfb9JsMTcXhbF';
             #double check to make sure this is value
             $params = new stdClass();
+            $params->extension_version = $this->getExtensionVersion();
             $params->invoiceID = $order_invoice;
+            $params->extension_version = $this->getExtensionVersion();
 
             $item = new Item($config, $params);
 
@@ -286,4 +289,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             }
         endif;
     }
+
+    public function getExtensionVersion()
+{
+    return (string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
+}
 }
