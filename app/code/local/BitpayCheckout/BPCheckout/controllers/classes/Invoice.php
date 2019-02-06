@@ -30,6 +30,7 @@ function createInvoice(){
    $request_headers = array();
    $request_headers[] = 'X-BitPay-Plugin-Info: '. $pluginInfo;
    $request_headers[] = 'Content-Type: application/json';
+  
    
    $ch = curl_init();
    curl_setopt($ch, CURLOPT_URL, 'https://'.$this->item->item_params->invoice_endpoint);

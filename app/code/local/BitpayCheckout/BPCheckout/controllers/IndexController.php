@@ -18,6 +18,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         require 'classes/Client.php';
         require 'classes/Item.php';
         require 'classes/Invoice.php';
+        require 'classes/Hash.php';
       
         $order = new Mage_Sales_Model_Order();
 
@@ -41,6 +42,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
         //create an item, should be passed as an object'
         $params = new stdClass();
+        $hash = new Hash();
+        $params->posData = $hash->setHash($bitpay_token);
+
         $params->extension_version = $this->getExtensionVersion();
         $params->price = $order->base_grand_total;
         $params->currency = $order->base_currency_code; //set as needed
@@ -174,11 +178,14 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             require 'classes/Client.php';
             require 'classes/Item.php';
             require 'classes/Invoice.php';
+            require 'classes/Hash.php';
            
             $data = json_decode(file_get_contents("php://input"), true);
+            
             $orderid = $data['orderId'];
             $order_status = $data['status'];
             $order_invoice = $data['id'];
+           
             
             $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');
             if ($env == 'test'):
@@ -187,29 +194,15 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             else:
                 $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
             endif;
-            $config = new Configuration($bitpay_token, $env);
-            #test invoice
-            #$order_invoice = 'VWtKRnryKGfb9JsMTcXhbF';
-            #double check to make sure this is value
-            $params = new stdClass();
-            $params->extension_version = $this->getExtensionVersion();
-            $params->invoiceID = $order_invoice;
-            $params->extension_version = $this->getExtensionVersion();
-
-            $item = new Item($config, $params);
-
-            $invoice = new Invoice($item); //this creates the invoice with all of the config params
            
-            
-            $orderStatus = json_decode($invoice->checkInvoiceStatus($order_invoice));
-
-            switch($orderStatus->data->status){
+            #double check to make sure this is value
+            $hash = new Hash();
+          
+            if ($hash->getHash($bitpay_token, $data['posData'])):
+            switch($order_status){
                 case 'complete':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
-
-                #test orderid
-                #$orderid = '100000319';
                 $order->loadByIncrementId($orderid);
                 
 
@@ -223,13 +216,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 case 'confirmed':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
-
-                #test orderid
-                #$orderid = '100000319';
                 $order->loadByIncrementId($orderid);
                 
-
-                #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
                 $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> is now processing.',
                 Mage_Sales_Model_Order::STATE_PROCESSING);
                 $order->save();
@@ -240,9 +228,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 default:
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
-
-                #test orderid
-                #$orderid = '100000319';
                 $order->loadByIncrementId($orderid);
                 $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> is now processing.', 
                 Mage_Sales_Model_Order::STATE_PROCESSING);
@@ -254,13 +239,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 case 'invalid':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
-
-                #test orderid
-                #$orderid = '100000319';
                 $order->loadByIncrementId($orderid);
                 
 
-                #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
                 $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> has become invalid because of network congestion.  Order will automatically update when the status changes.',
                 Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
                 $order->save();
@@ -270,24 +251,17 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 case 'expired':
                 #load the order to update
                 $order = new Mage_Sales_Model_Order();
-
-                #test orderid
-                #$orderid = '100000319';
                 $order->loadByIncrementId($orderid);
                 
-
-                #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
                 $order->addStatusHistoryComment('BitPay Invoice <a href = "http://'.$item->endpoint.'/dashboard/payments/'.$order_invoice.'" target = "_blank">'.$order_invoice.'</a> has expired, order has been canceled.',
                 Mage_Sales_Model_Order::STATE_CANCELED);
                 $order->save();
                 return true;
                 break;
 
-
-
-
             }
-        endif;
+            endif;#end hash check
+        endif;#end post check
     }
 
     public function getExtensionVersion()
