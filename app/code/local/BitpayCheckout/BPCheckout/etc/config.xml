@@ -2,7 +2,7 @@
 <config>
   <modules>
     <BitpayCheckout_BPCheckout>
-      <version>1.0.0.0</version>
+      <version>0.1.0</version>
     </BitpayCheckout_BPCheckout>
   </modules>
  
@@ -35,11 +35,25 @@
  
     <resources>
       <bpcheckout_setup>
-        <bitpay_setup>
+        <setup>
           <module>BitpayCheckout_BPCheckout</module>
-        </bitpay_setup>
+        </setup>
+        <connection>
+          <use>core_setup</use>
+        </connection>
       </bpcheckout_setup>
+      <bpcheckout_write>
+        <connection>
+          <use>core_write</use>
+        </connection>
+      </bpcheckout_write>
+      <bpcheckout_read>
+        <connection>
+          <use>core_read</use>
+        </connection>
+      </bpcheckout_read>
     </resources>
+  
     
   </global>
   
