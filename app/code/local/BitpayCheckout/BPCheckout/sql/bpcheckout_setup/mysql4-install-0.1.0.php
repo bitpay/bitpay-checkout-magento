@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS $table_name (
         `order_id` int(11) NOT NULL,
         `transaction_id` varchar(255) NOT NULL,
         `transaction_status` varchar(50) NOT NULL DEFAULT 'new',
-        `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`))
 ");
 $installer->endSetup();
