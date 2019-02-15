@@ -84,6 +84,18 @@
               <sort_order>3</sort_order>
                <comment><![CDATA[If this is set to <b>Redirect</b>, then the customer will be redirected to <b>BitPay</b> to checkout, and return to the checkout page once the payment is made.<br><br>If this is set to <b>Popup Modal</b>, the user will stay on your e-commerce site and complete the transaction.]]></comment>
             </bitpay_ux>
+        
+            <bitpay_capture_email translate="label">
+              <label>Auto-Capture Email</label>
+              <frontend_type>select</frontend_type>
+              <source_model>BitpayCheckout_BPCheckout_Capture</source_model>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+              <sort_order>3</sort_order>
+              <comment><![CDATA[Should BitPay Checkout try to auto-add the client\'s email address?<br>If <b>Yes</b>, the client will not be able to change the email address on the BitPay Checkout invoice.<br>If <b>No</b>, they will be able to add their own email address when paying the invoice.]]></comment>
+            </bitpay_capture_email>
+           
             <!--
             <bitpay_message translate="label">
               <label>Checkout Message</label>
