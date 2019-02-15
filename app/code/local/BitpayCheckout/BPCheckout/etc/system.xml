@@ -82,7 +82,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
               <sort_order>3</sort_order>
-               <comment><![CDATA[If this is set to <b>Redirect</b>, then the customer will be redirected to <b>BitPay</b> to checkout, and return to the checkout page once the payment is made.<br><br>If this is set to <b>Popup Modal</b>, the user will stay on your e-commerce site and complete the transaction.]]></comment>
+               <comment><![CDATA[If this is set to <b>Redirect</b>, then the customer will be redirected to <b>BitPay</b> to checkout, and return to the checkout page once the payment is made.<br><br>If this is set to <b>Modal</b>, the user will stay on your e-commerce site and complete the transaction.]]></comment>
             </bitpay_ux>
         
             <bitpay_capture_email translate="label">
