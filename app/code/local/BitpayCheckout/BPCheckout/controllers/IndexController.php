@@ -116,7 +116,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     public function modalAction()
     {
         $orderId = Mage::getModel("sales/order")->getCollection()->getLastItem()->getIncrementId();
-        BitpayCheckout_BPCheckout_PaymentController::redirectAction(true, $orderId);
+        BitpayCheckout_BPCheckout_IndexController::redirectAction(true, $orderId);
 
     }
     public function renewcartAction()
