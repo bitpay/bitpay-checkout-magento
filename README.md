@@ -33,6 +33,8 @@ You can now activate the BitPay Checkout in the *System->Configuration->Payment 
 * **Checkout Flow**
 	* **Redirect** - This will send the user to the BitPay invoice screen, and they will be redirected after the transaction to the Order Completed page
 	* **Modal** - This will open a popup modal on your site, and will display the order details once the transaction is completed.
+* **Auto Capture Email** - If enabled, the plugin will attempt to auto-fill the buyer's email address when paying the invoice
+
 	
 
 This plugin also includes an IPN endpoint that will update  your Magento order status.

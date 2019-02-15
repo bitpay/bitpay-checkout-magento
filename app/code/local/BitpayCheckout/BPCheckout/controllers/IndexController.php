@@ -81,6 +81,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         //now we have to append the invoice transaction id for the callback verification
         $invoiceID = $invoiceData->data->id;
         $use_modal = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_ux');
+
+       
        
         Mage::getSingleton('checkout/cart')->truncate();
         Mage::getSingleton('checkout/cart')->save();
