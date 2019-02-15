@@ -18,6 +18,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         require 'classes/Client.php';
         require 'classes/Item.php';
         require 'classes/Invoice.php';
+
+
       
         $order = new Mage_Sales_Model_Order();
 
@@ -57,6 +59,12 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $params->buyerSelectedTransactionCurrency = 'BCH';
                 break;
         }
+        #buyers email
+        $bitpay_capture_email = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_capture_email');
+        if($bitpay_capture_email == 1):
+            $current_user = Mage::getSingleton('customer/session')->getCustomer();
+            $params->buyers_email = $current_user->getEmail();            
+        endif;
         $params->orderId = trim($orderId);
         $params->redirectURL = Mage::getBaseUrl().'sales/order/view/order_id/'.$shortOrderID.'/';
         #ipn
