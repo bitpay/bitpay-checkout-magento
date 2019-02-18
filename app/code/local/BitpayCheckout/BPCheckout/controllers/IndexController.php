@@ -69,6 +69,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $params->redirectURL = Mage::getBaseUrl().'sales/order/view/order_id/'.$shortOrderID.'/';
         #ipn
         $params->notificationURL = Mage::getBaseUrl( Mage_Core_Model_Store::URL_TYPE_WEB, true ) . 'bitpayipn/index/bitpayipn';
+        $params->extendedNotifications = true;
 
         $cartFix = Mage::getBaseUrl().'cartfix/index/renewcart/orderid/'.$orderId;
         $item = new Item($config, $params);
@@ -183,7 +184,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     //mg host + bitpayipn/index/bitpayipn
     public function bitpayipnAction()
     {
-       
         if (isset($_POST)):
            
             #include our custom BP2 classes
@@ -192,7 +192,10 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             require 'classes/Item.php';
             require 'classes/Invoice.php';
            
-            $data = json_decode(file_get_contents("php://input"), true);
+            $all_data = json_decode(file_get_contents("php://input"), true);
+             #
+            $data = $all_data['data'];
+            $event = $all_data['event'];
             $orderid = $data['orderId'];
             $order_status = $data['status'];
             $order_invoice = $data['id'];
@@ -234,8 +237,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $sql = "UPDATE $table_name SET transaction_status = '$invoice_status' WHERE order_id = '$orderid' AND transaction_id = '$order_invoice'";
                 $write->query($sql);
 
-                switch($invoice_status){
-                    case 'complete':
+                switch($event->name){
+                    case 'invoice_completed':
                     #load the order to update
                     $order = new Mage_Sales_Model_Order();
                     $order->loadByIncrementId($orderid);
@@ -246,7 +249,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                     return true;
                     break;
 
-                    case 'confirmed':
+                    case 'invoice_confirmed':
                     #load the order to update
                     $order = new Mage_Sales_Model_Order();
                     $order->loadByIncrementId($orderid);
@@ -259,7 +262,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                     return true;
                     break;
 
-                    case 'paid':
+                    case 'invoice_paidInFull':
                     default:
                     #load the order to update
                     $order = new Mage_Sales_Model_Order();
@@ -272,7 +275,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 
                     break;
 
-                    case 'invalid':
+                    case 'invoice_failedToConfirm':
                     #load the order to update
                     $order = new Mage_Sales_Model_Order();
 
@@ -286,7 +289,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                     return true;
                     break;
 
-                    case 'expired':
+                    case 'invoice_expired':
                     #load the order to update
                     $order = new Mage_Sales_Model_Order();
 
