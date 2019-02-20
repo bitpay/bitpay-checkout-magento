@@ -25,10 +25,10 @@
  */
 ?>
 <?php $methodCode = Mage::getSingleton('checkout/session')->getQuote()->getPayment()->getMethod();?>
+<?php $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');?>
 
 <?php if($methodCode == 'bitpaycheckout' && Mage::getStoreConfig('payment/bitpaycheckout/bitpay_ux') == 'modal'):?>
 
-<?php $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');?>
 
 <button type="submit" id = "bitpaybtn" title="<?php echo Mage::helper('core')->quoteEscape($this->__('Place Order')) ?>" class="button btn-checkout" onclick="review.save();showModal('<?php echo $env;?>');"><span><span><?php echo $this->__('Place Order') ?></span></span></button>
 <?php else:?>
