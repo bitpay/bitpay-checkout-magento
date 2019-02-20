@@ -71,7 +71,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
               <sort_order>3</sort_order>
-               <comment><![CDATA[Bitcoin (BTC), Bitcoin Cash (BCH), or All.]]></comment>
+               <comment><![CDATA[Bitcoin (BTC) or Bitcoin Cash (BCH).]]></comment>
             </bitpay_currency>
 
             <bitpay_ux translate="label">
