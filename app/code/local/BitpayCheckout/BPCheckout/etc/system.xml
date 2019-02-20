@@ -93,7 +93,7 @@
               <show_in_website>1</show_in_website>
               <show_in_store>0</show_in_store>
               <sort_order>3</sort_order>
-              <comment><![CDATA[Should BitPay try to auto-add the client\'s email address?<br>If <b>Yes</b>, the client will not be able to change the email address on the BitPay invoice.<br>If <b>No</b>, they will be able to add their own email address when paying the invoice.]]></comment>
+              <comment><![CDATA[Should BitPay try to auto-add the client's email address?<br>If <b>Yes</b>, the client will not be able to change the email address on the BitPay invoice.<br>If <b>No</b>, they will be able to add their own email address when paying the invoice.]]></comment>
             </bitpay_capture_email>
            
             <order_status translate="label">
