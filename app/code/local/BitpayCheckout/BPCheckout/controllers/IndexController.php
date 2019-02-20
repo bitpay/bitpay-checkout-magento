@@ -45,18 +45,13 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $params->price             = $order->base_grand_total;
         $params->currency          = $order->base_currency_code; //set as needed
 
-        $bitpay_currency = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_currency');
-        switch ($bitpay_currency) {
-            default:
-            case 1:
-                break;
-            case 'BTC':
-                $params->buyerSelectedTransactionCurrency = 'BTC';
-                break;
-            case 'BCH':
-                $params->buyerSelectedTransactionCurrency = 'BCH';
-                break;
-        }
+        $bitpay_currency = explode(",", Mage::getStoreConfig('payment/bitpaycheckout/bitpay_currency'));
+        if(empty($bitpay_currency)):
+               $bitpay_currency = array("BTC","BCH");   
+        endif;
+        $params->paymentCurrencies = $bitpay_currency;
+
+
         #buyers email
         $bitpay_capture_email = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_capture_email');
         if ($bitpay_capture_email == 1):
