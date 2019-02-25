@@ -63,9 +63,31 @@
               <comment><![CDATA[Select <b>Test</b> for testing the plugin, <b>Production</b> when you are ready to go live.]]></comment>
             </bitpay_endpoint>
 
+          <bitpay_currency_btc translate="label">
+            <label>Accepted Bitcoin</label>
+            <frontend_type>select</frontend_type>
+            <source_model>adminhtml/system_config_source_yesno</source_model>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>0</show_in_store>
+            <sort_order>3</sort_order>
+            <comment><![CDATA[Accept Bitcoin as a payment method]]></comment>
+          </bitpay_currency_btc>
+
+          <bitpay_currency_bch translate="label">
+            <label>Accepted BitCoin Cash</label>
+            <frontend_type>select</frontend_type>
+            <source_model>adminhtml/system_config_source_yesno</source_model>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>0</show_in_store>
+            <sort_order>3</sort_order>
+            <comment><![CDATA[Accept Bitcoin Cash as a payment method]]></comment>
+          </bitpay_currency_bch>
+            <!--
             <bitpay_currency translate="label">
               <label>Accepted Cryptocurrencies</label>
-              <frontend_type>multiselect</frontend_type>
+              <frontend_type>checkbox</frontend_type>
               <source_model>BitpayCheckout_BPCheckout_Crypto</source_model>
               <show_in_default>1</show_in_default>
               <show_in_website>1</show_in_website>
@@ -73,6 +95,8 @@
               <sort_order>3</sort_order>
                <comment><![CDATA[Bitcoin (BTC) or Bitcoin Cash (BCH).]]></comment>
             </bitpay_currency>
+
+            -->
 
             <bitpay_ux translate="label">
               <label>Checkout Flow</label>
