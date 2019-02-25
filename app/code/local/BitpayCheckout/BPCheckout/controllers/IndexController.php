@@ -315,7 +315,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
     public function getExtensionVersion()
     {
-        return 'Magento1_2.0';
-        #return 'Magento1_' . (string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
+        #return 'Magento1_2.0';
+        return 'Magento1_' . (string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
     }
 }
