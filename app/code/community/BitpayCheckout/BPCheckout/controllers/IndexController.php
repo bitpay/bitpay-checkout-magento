@@ -1,6 +1,6 @@
 <?php
 
-require_once 'app/code/local/BitpayCheckout/BPCheckout/controllers/Paymentcontroller.php';
+require_once 'app/code/community/BitpayCheckout/BPCheckout/controllers/Paymentcontroller.php';
 
 class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Front_Action
 {
