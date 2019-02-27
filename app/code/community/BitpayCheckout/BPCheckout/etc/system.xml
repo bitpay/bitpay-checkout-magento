@@ -13,7 +13,6 @@
                  Expand your payment options by accepting instant BTC and BCH payments without risk or price fluctuations.<br><br>You should not ship any products until BitPay has finalized your transaction.<br>The order will stay in a <b>Hold</b> and/or <b>Processing</b> state, and will automatically change to <b>Completed</b> after the payment has been confirmed.<br><br>If you have not created a BitPay Merchant Token, you can create one at BitPay.com<br><a href = "https://test.bitpay.com/dashboard/merchant/api-tokens" target = "_blank">(Test)</a>  or <a href= "https://www.bitpay.com/dashboard/merchant/api-tokens" target = "_blank">(Production)</a> </p>]]>
                 
                 </comment>
-<expanded>0</expanded>
 <label>BitPay</label>
           <sort_order>1000</sort_order>
           <show_in_default>1</show_in_default>
