@@ -6,7 +6,7 @@
         <bitpaycheckout translate="label" module="bpcheckout">
                 <comment>
                 <![CDATA[
-                <div style = "width:100%;background-color:#1A3A8B;clear:both;height:100px;margin-bottom: 50px;">
+                <div style = "width:100%;background-color:#1A3A8B;clear:both;height:100px;margin-bottom: 15px;">
                 <img onclick = 'window.open("https://www.bitpay.com")' src="//bitpay.com/images/bitpay-logo-white.1483711b.png" style = "width:150px;padding-top: 25px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px;cursor:pointer;">
                 </div>
 
