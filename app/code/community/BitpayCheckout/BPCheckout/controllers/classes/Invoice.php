@@ -15,7 +15,7 @@ class Invoice
         $post_fields = ($this->item->item_params);
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://' . $this->item->item_params->invoice_endpoint . '/' . $post_fields->invoiceID);
+        curl_setopt($ch, CURLOPT_URL, 'https://' . $this->item->invoice_endpoint . '/' . $post_fields->invoiceID);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
