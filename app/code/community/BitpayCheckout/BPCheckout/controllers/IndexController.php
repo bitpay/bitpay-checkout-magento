@@ -48,13 +48,19 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
        
         #buyers email
         $bitpay_capture_email = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_capture_email');
+        $current_user = Mage::getSingleton("customer/session");
+        if($current_user->isLoggedIn()){
         if ($bitpay_capture_email == 1):
-            $current_user         = Mage::getSingleton('customer/session')->getCustomer();
+            #$current_user = Mage::getSingleton('customer/session')->getCustomer();
+            $current_user = $current_user->getCustomer();
+           
             $buyerInfo        = new stdClass();
             $buyerInfo->name  = $current_user->getName();
             $buyerInfo->email = $current_user->getEmail();
             $params->buyer    = $buyerInfo;
+
         endif;
+        }
         $params->orderId     = trim($orderId);
         $params->redirectURL = Mage::getBaseUrl() . 'sales/order/view/order_id/' . $shortOrderID . '/';
         #ipn
