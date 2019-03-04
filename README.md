@@ -13,7 +13,7 @@ This version requires the following
 2. In your *System->Configuration->Web*, add the following scripts
 
 ```
-<script src = "//bitpay.com/bitpay.js"></script>
+<script src = "https://bitpay.com/bitpay.min.js"></script>
 <script src = "/js/bitpay/showmodal.js"></script>
 ```
 
