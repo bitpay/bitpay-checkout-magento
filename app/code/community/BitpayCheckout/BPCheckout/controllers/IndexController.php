@@ -66,6 +66,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         #ipn
         $params->notificationURL       = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn';
         $params->extendedNotifications = true;
+        $params->transactionSpeed = 'medium';
+
 
         $cartFix = Mage::getBaseUrl() . 'cartfix/index/renewcart/orderid/' . $orderId;
         $item    = new Item($config, $params);
@@ -233,7 +235,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $write->query($sql);
 
                 switch ($event['name']) {
-                    case 'invoice_completed':
+                    case 'invoice_confirmed':
                         #load the order to update
                         $order = new Mage_Sales_Model_Order();
                         $order->loadByIncrementId($orderid);
@@ -243,27 +245,14 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                         $order->save();
                         return true;
                         break;
-
-                    case 'invoice_confirmed':
-                        #load the order to update
-                        $order = new Mage_Sales_Model_Order();
-                        $order->loadByIncrementId($orderid);
-
-                        #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
-                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is now processing.',
-                            Mage_Sales_Model_Order::STATE_PROCESSING);
-                        $order->save();
-                        return true;
-                        break;
-
+                        
                     case 'invoice_paidInFull':
-                    default:
                         #load the order to update
                         $order = new Mage_Sales_Model_Order();
 
                         $order->loadByIncrementId($orderid);
-                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is now processing.',
-                            Mage_Sales_Model_Order::STATE_PROCESSING);
+                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is now pending.',
+                            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
 
                         return true;
 
