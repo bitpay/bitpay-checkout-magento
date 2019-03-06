@@ -251,8 +251,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                         $order = new Mage_Sales_Model_Order();
 
                         $order->loadByIncrementId($orderid);
-                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is now pending.',
-                            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is processing.',
+                            Mage_Sales_Model_Order::STATE_PROCESSING);
 
                         return true;
 
