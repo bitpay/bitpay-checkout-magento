@@ -24,6 +24,7 @@
  * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 ?>
+
 <?php $methodCode = Mage::getSingleton('checkout/session')->getQuote()->getPayment()->getMethod();?>
 <?php $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');?>
 

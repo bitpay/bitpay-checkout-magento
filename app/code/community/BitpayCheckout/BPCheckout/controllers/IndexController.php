@@ -14,10 +14,17 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     public function redirectAction($modal = null, $orderId = null)
     {
         #include our custom BP2 classes
-        require 'classes/Config.php';
-        require 'classes/Client.php';
-        require 'classes/Item.php';
-        require 'classes/Invoice.php';
+        function BPC_autoloader($class)
+        {
+            if (strpos($class, 'BPC_') !== false):
+                if (!class_exists('BitPayLib/' . $class, false)):
+                    #doesnt exist so include it
+                    require 'BitPayLib/' . $class . '.php';
+                endif;
+            endif;
+        }
+
+        spl_autoload_register('BPC_autoloader');
 
         $order = new Mage_Sales_Model_Order();
 
@@ -37,46 +44,44 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         else:
             $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
         endif;
-        $config = new Configuration($bitpay_token, $env);
+        $config = new BPC_Configuration($bitpay_token, $env);
 
         //create an item, should be passed as an object'
-        $params                    = new stdClass();
+        $params = new stdClass();
         $params->extension_version = $this->getExtensionVersion();
-        $params->price             = $order->base_grand_total;
-        $params->currency          = $order->base_currency_code; //set as needed
+        $params->price = $order->base_grand_total;
+        $params->currency = $order->base_currency_code; //set as needed
 
-       
         #buyers email
         $bitpay_capture_email = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_capture_email');
         $current_user = Mage::getSingleton("customer/session");
-        if($current_user->isLoggedIn()){
-        if ($bitpay_capture_email == 1):
-            #$current_user = Mage::getSingleton('customer/session')->getCustomer();
-            $current_user = $current_user->getCustomer();
-           
-            $buyerInfo        = new stdClass();
-            $buyerInfo->name  = $current_user->getName();
-            $buyerInfo->email = $current_user->getEmail();
-            $params->buyer    = $buyerInfo;
+        if ($current_user->isLoggedIn()) {
+            if ($bitpay_capture_email == 1):
+                #$current_user = Mage::getSingleton('customer/session')->getCustomer();
+                $current_user = $current_user->getCustomer();
 
-        endif;
+                $buyerInfo = new stdClass();
+                $buyerInfo->name = $current_user->getName();
+                $buyerInfo->email = $current_user->getEmail();
+                $params->buyer = $buyerInfo;
+
+            endif;
         }
-        $params->orderId     = trim($orderId);
+        $params->orderId = trim($orderId);
         $params->redirectURL = Mage::getBaseUrl() . 'sales/order/view/order_id/' . $shortOrderID . '/';
         #ipn
-        $params->notificationURL       = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn';
+        $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn';
         $params->extendedNotifications = true;
         $params->transactionSpeed = 'medium';
 
-
         $cartFix = Mage::getBaseUrl() . 'cartfix/index/renewcart/orderid/' . $orderId;
-        $item    = new Item($config, $params);
+        $item = new BPC_Item($config, $params);
 
-        $invoice = new Invoice($item);
+        $invoice = new BPC_Invoice($item);
 
         //this creates the invoice with all of the config params from the item
-        $invoice->createInvoice();
-        $invoiceData = json_decode($invoice->getInvoiceData());
+        $invoice->BPC_createInvoice();
+        $invoiceData = json_decode($invoice->BPC_getInvoiceData());
         //now we have to append the invoice transaction id for the callback verification
         $invoiceID = $invoiceData->data->id;
         $use_modal = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_ux');
@@ -85,24 +90,24 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         Mage::getSingleton('checkout/cart')->save();
 
         #insert into the lookup table
-        $prefix     = (string) Mage::getConfig()->getTablePrefix();
+        $prefix = (string) Mage::getConfig()->getTablePrefix();
         $table_name = $prefix . 'bitpay_transactions';
-        $write      = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sql        = "INSERT INTO $table_name (order_id,transaction_id,transaction_status) VALUES ('" . $orderId . "','" . $invoiceID . "','new')";
+        $write = Mage::getSingleton('core/resource')->getConnection('core_write');
+        $sql = "INSERT INTO $table_name (order_id,transaction_id,transaction_status) VALUES ('" . $orderId . "','" . $invoiceID . "','new')";
         $write->query($sql);
 
         switch ($use_modal) {
             default:
             case 'redirect':
-                Mage::app()->getResponse()->setRedirect($invoice->getInvoiceURL())->sendResponse();
+                Mage::app()->getResponse()->setRedirect($invoice->BPC_getInvoiceURL())->sendResponse();
                 return;
                 break;
             case 'modal':
-                $modal_obj                  = new stdClass();
-                $modal_obj->redirectURL     = $params->redirectURL;
+                $modal_obj = new stdClass();
+                $modal_obj->redirectURL = $params->redirectURL;
                 $modal_obj->notificationURL = $params->notificationURL;
-                $modal_obj->cartFix         = $cartFix;
-                $modal_obj->invoiceID       = $invoiceID;
+                $modal_obj->cartFix = $cartFix;
+                $modal_obj->invoiceID = $invoiceID;
                 echo json_encode($modal_obj);
 
                 return;
@@ -126,7 +131,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         Mage::app('default');
         Mage::register('isSecureArea', 1);
         $orderId = $this->getRequest()->getParam('orderid');
-        $order   = Mage::getModel('sales/order')->loadByIncrementId($orderId);
+        $order = Mage::getModel('sales/order')->loadByIncrementId($orderId);
 
         $orderItems = $order->getItemsCollection()
             ->addAttributeToSelect('*')
@@ -181,31 +186,39 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         if (isset($_POST)):
 
             #include our custom BP2 classes
-            require 'classes/Config.php';
-            require 'classes/Client.php';
-            require 'classes/Item.php';
-            require 'classes/Invoice.php';
+            #autoloader
+            function BPC_autoloader($class)
+                {
+                if (strpos($class, 'BPC_') !== false):
+                    if (!class_exists('BitPayLib/' . $class, false)):
+                        #doesnt exist so include it
+                        require 'BitPayLib/' . $class . '.php';
+                    endif;
+                endif;
+            }
+
+            spl_autoload_register('BPC_autoloader');
 
             $all_data = json_decode(file_get_contents("php://input"), true);
             #
-            $data  = $all_data['data'];
+            $data = $all_data['data'];
             $event = $all_data['event'];
 
             $orderid = $data['orderId'];
 
-            $order_status  = $data['status'];
+            $order_status = $data['status'];
             $order_invoice = $data['id'];
 
             # print_r($event['name']);die();
 
             #check and see if its in the lookup
-            $read       = Mage::getSingleton('core/resource')->getConnection('core_read');
-            $prefix     = (string) Mage::getConfig()->getTablePrefix();
+            $read = Mage::getSingleton('core/resource')->getConnection('core_read');
+            $prefix = (string) Mage::getConfig()->getTablePrefix();
             $table_name = $prefix . 'bitpay_transactions';
-            $sql        = "SELECT * FROM $table_name WHERE order_id = '$orderid' AND transaction_id = '$order_invoice' ";
+            $sql = "SELECT * FROM $table_name WHERE order_id = '$orderid' AND transaction_id = '$order_invoice' ";
 
             $result = $read->query($sql);
-            $row    = $result->fetch();
+            $row = $result->fetch();
 
             if ($row): #there is a record
 
@@ -216,22 +229,22 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 else:
                     $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
                 endif;
-                $config = new Configuration($bitpay_token, $env);
+                $config = new BPC_Configuration($bitpay_token, $env);
                 #double check to make sure this is value
-                $params                    = new stdClass();
+                $params = new stdClass();
                 $params->extension_version = $this->getExtensionVersion();
-                $params->invoiceID         = $order_invoice;
+                $params->invoiceID = $order_invoice;
                 $params->extension_version = $this->getExtensionVersion();
 
-                $item = new Item($config, $params);
+                $item = new BPC_Item($config, $params);
 
-                $invoice = new Invoice($item); //this creates the invoice with all of the config params
+                $invoice = new BPC_Invoice($item); //this creates the invoice with all of the config params
 
-                $orderStatus    = json_decode($invoice->checkInvoiceStatus($order_invoice));
+                $orderStatus = json_decode($invoice->BPC_checkInvoiceStatus($order_invoice));
                 $invoice_status = $orderStatus->data->status;
                 #lets update the db
                 $write = Mage::getSingleton('core/resource')->getConnection('core_write');
-                $sql   = "UPDATE $table_name SET transaction_status = '$invoice_status' WHERE order_id = '$orderid' AND transaction_id = '$order_invoice'";
+                $sql = "UPDATE $table_name SET transaction_status = '$invoice_status' WHERE order_id = '$orderid' AND transaction_id = '$order_invoice'";
                 $write->query($sql);
 
                 switch ($event['name']) {
@@ -245,7 +258,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                         $order->save();
                         return true;
                         break;
-                        
+
                     case 'invoice_paidInFull':
                         #load the order to update
                         $order = new Mage_Sales_Model_Order();
