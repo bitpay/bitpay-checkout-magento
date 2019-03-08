@@ -292,9 +292,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
                         $order->loadByIncrementId($orderid);
 
-                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> has expired, order has been canceled.',
-                            Mage_Sales_Model_Order::STATE_CANCELED);
-                        $order->save();
+                        $order->delete();
                         return true;
                         break;
 
