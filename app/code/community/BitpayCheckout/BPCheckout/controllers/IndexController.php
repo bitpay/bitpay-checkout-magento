@@ -73,6 +73,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn';
         $params->extendedNotifications = true;
         $params->transactionSpeed = 'medium';
+        $params->acceptanceWindow = 1200000;
+
 
         $cartFix = Mage::getBaseUrl() . 'cartfix/index/renewcart/orderid/' . $orderId;
         $item = new BPC_Item($config, $params);
