@@ -187,7 +187,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     public function bitpayipnAction()
     {
        
-        $hash_key = $_REQUEST['hash_key'];
+       #$hash_key = $_REQUEST['hash_key'];
         if (isset($_POST)):
 
             #include our custom BP2 classes
@@ -235,9 +235,11 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             $config = new BPC_Configuration($bitpay_token, $env);
             #check the hash
             #verify the hash before moving on
-            if(!$config->BPC_checkHash($orderid,$hash_key)):
-                die();
-            endif;
+
+            #disable this for now so new installs can start creating
+            #if(!$config->BPC_checkHash($orderid,$hash_key)):
+            #    die();
+            #endif;
 
                 
                 
@@ -245,7 +247,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $params = new stdClass();
                 $params->extension_version = $this->getExtensionVersion();
                 $params->invoiceID = $order_invoice;
-                $params->extension_version = $this->getExtensionVersion();
 
                 $item = new BPC_Item($config, $params);
 
@@ -326,7 +327,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
     public function getExtensionVersion()
     {
-        return 'BitPay_Checkout_Magento1_3.0.3.5';
+        return 'BitPay_Checkout_Magento1_3.0.3.6';
        # return 'BitPay_Checkout_Magento1_' . (string) Mage::getConfig()->getNode()->modules->BitpayCheckout_BPCheckout->version;
     }
 }
