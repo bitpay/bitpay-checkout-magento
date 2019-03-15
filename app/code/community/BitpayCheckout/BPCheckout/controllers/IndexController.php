@@ -70,7 +70,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $params->orderId = trim($orderId);
         $params->redirectURL = Mage::getBaseUrl() . 'sales/order/view/order_id/' . $shortOrderID . '/';
         #ipn
-        $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn';
+        $hash_key = $config->BPC_generateHash($params->orderId);
+        $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn?hash_key='.$hash_key;
         $params->extendedNotifications = true;
         $params->transactionSpeed = 'medium';
         $params->acceptanceWindow = 1200000;
@@ -185,6 +186,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     //mg host + bitpayipn/index/bitpayipn
     public function bitpayipnAction()
     {
+       
+        $hash_key = $_REQUEST['hash_key'];
         if (isset($_POST)):
 
             #include our custom BP2 classes
@@ -218,20 +221,26 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             $prefix = (string) Mage::getConfig()->getTablePrefix();
             $table_name = $prefix . 'bitpay_transactions';
             $sql = "SELECT * FROM $table_name WHERE order_id = '$orderid' AND transaction_id = '$order_invoice' ";
-
             $result = $read->query($sql);
             $row = $result->fetch();
 
             if ($row): #there is a record
+            $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');
+            if ($env == 'test'):
+                $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_devtoken');
 
-                $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');
-                if ($env == 'test'):
-                    $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_devtoken');
+            else:
+                $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
+            endif;
+            $config = new BPC_Configuration($bitpay_token, $env);
+            #check the hash
+            #verify the hash before moving on
+            if(!$config->BPC_checkHash($orderid,$hash_key)):
+                die();
+            endif;
 
-                else:
-                    $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
-                endif;
-                $config = new BPC_Configuration($bitpay_token, $env);
+                
+                
                 #double check to make sure this is value
                 $params = new stdClass();
                 $params->extension_version = $this->getExtensionVersion();
