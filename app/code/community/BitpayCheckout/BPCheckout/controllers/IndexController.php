@@ -289,9 +289,8 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
                         $order->loadByIncrementId($orderid);
 
-                        #$order->setData('state', Mage_Sales_Model_Order::STATE_COMPLETE);
                         $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> has become invalid because of network congestion.  Order will automatically update when the status changes.',
-                            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+                            Mage_Sales_Model_Order::STATE_PROCESSING);
                         $order->save();
                         return true;
                         break;
