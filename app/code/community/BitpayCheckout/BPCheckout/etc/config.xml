@@ -62,7 +62,7 @@
       <bitpaycheckout>
         <active>1</active>
         <model>bpcheckout/paymentmethod</model>
-        <order_status>pending</order_status>
+        <order_status>processing</order_status>
         <title>BitPay</title>
         <allowspecific>1</allowspecific>
         <payment_action>sale</payment_action>
