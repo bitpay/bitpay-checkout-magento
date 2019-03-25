@@ -5,10 +5,12 @@ function showModal(env){
     setTimeout(function(){ 
     jQuery.post( "/showmodal/index/modal", function(data ) {
     jQuery("#bitpaybtn").prop("disabled",true)
+       var is_paid = false
        var response = JSON.parse(data)
         window.addEventListener("message", function (event) {
             payment_status = event.data.status;
             if (payment_status == "paid") {
+                is_paid = true
                 window.location.href =response.redirectURL;
                 return;
             } 
@@ -20,7 +22,7 @@ function showModal(env){
             });
             //show the order info
             bitpay.onModalWillLeave(function () {
-                if (payment_status != "paid") {
+                if (is_paid == false) {
                   window.location.href = response.cartFix;
                 } //endif
             });
