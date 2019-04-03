@@ -1,0 +1,11 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "magento",
+    "password": "magento",
+    "database": "magento"
+  },
+  "host": "http://127.0.0.1/magento/index.php/bitpay/ipn",
+  "status": "confirmed"
+}
+  

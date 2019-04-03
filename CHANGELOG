@@ -1,0 +1,76 @@
+2.1.19 (2018-04-09)
+	Simplified BitPay Magento configuration screen
+	Updated PHP library to v2.2.20 (supporting BitPay's API after May 1st 2018)
+	Support for Magento Marketplace: https://marketplace.magento.com/bitpay-bitpay-core.html
+
+
+2.1.18 (2018-03-16)
+	Fixed dependencies in composer.json (#127)
+	Fixed landing page after failure or expired payment (#124, #123, #117, #120)
+	Fixed missing apikeys configuration in system.xml (#122)
+	Fixed IPN creating 2nd invoice instead of updating invoice (#121)
+	Fixed non-debug logging (#115)
+	Fixed checkout page text (#112)
+
+2.1.17
+        Added missing methods in the Magento version below 1.9: _isSameCurrency, getStatusStatuses, addStatusfilter.
+2.1.16
+        Fixed creating after payment a second invoice in database instead of update invoice issue
+2.1.14
+	Use Magento shop base currency to create a BitPay invoice (instead of the shopper's selected currency)
+2.1.13
+	Redirected check out and iframe checkout share the same order creation logic.
+	The order will be created during saveOrder call to backend.
+2.1.12
+	iFrame order will create order
+2.1.11
+	Repaired redirected checkout invoice amount calculation
+2.1.10
+	Fixed currency issue
+
+2.1.9
+	Fixed code incompatible with PHP 5.4
+
+2.1.8
+	Customer info now logged for invoice
+	Added direct checkout feature
+
+2.1.7
+	MagentoStorage::load returns KeyInterface instance or throws an exception.
+	IPN handler now does not override manually updated order statuses
+
+2.1.6
+    Pegged bitpay/php-client to commit 9027ce67e4b28516ff1ebd1046bdd15c37a7a59f
+    Fixes IPN issues
+
+2.1.5
+    Updated bitpay/php-client to 2.2.4
+
+2.1.4
+    Removed Symfony dependency
+    Fixed timestamp logging in database
+
+2.1.2
+    Added extra error handling and fixed debugging
+    Re-added new order email notifications
+    Updated README documentation for accuracy
+    Re-wrote delete.sh shell script to autodetect Magento directory and
+    be more helpful when cleaning an old BitPay plugin from the server
+
+2.1.1
+	Bug fix sanitizing labels for token pairing
+	Replaced GMP only requirement with GMP or BC Math requirement
+
+2.1.0
+	Bug fix with IPNs not working when debug mode is enabled
+	Updated BitPay PHP SDK
+	Added a release checklist
+
+2.0.1
+	Small bug fix in how package script
+
+2.0.0
+	Initial release of the new Magento Extension that supports BitPay's new
+	cryptographically secure API. You can read more about the new API on the
+	blog at
+	http://blog.bitpay.com/2014/09/18/announcing-the-new-bitpay-api.html
