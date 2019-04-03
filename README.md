@@ -1,6 +1,6 @@
 # Quick Setup
 
-[![Build Status](https://travis-ci.org/bitpay/magento-plugin.svg?branch=master)](https://travis-ci.org/bitpay/magento-plugin)
+[![Build Status](https://travis-ci.org/bitpay/bitpay-checkout-magento.svg?branch=master)](https://travis-ci.org/bitpay/bitpay-checkout-magento)
 
 This version requires the following
 
