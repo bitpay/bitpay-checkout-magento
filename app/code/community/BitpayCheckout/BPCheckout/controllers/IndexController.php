@@ -6,9 +6,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 {
     public function indexAction()
     {
-        echo '<h2>You should not be here.</h2>';
-        die();
-
+         #nothing to do
     }
 
     public function redirectAction($modal = null, $orderId = null)
@@ -111,9 +109,9 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $modal_obj->notificationURL = $params->notificationURL;
                 $modal_obj->cartFix = $cartFix;
                 $modal_obj->invoiceID = $invoiceID;
-                echo json_encode($modal_obj);
-
-                return;
+                setcookie('use_modal', $use_modal, time() + (86400 * 30), "/"); // 86400 = 1 day
+                setcookie('env', $env, time() + (86400 * 30), "/"); // 86400 = 1 day
+                return $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($modal_obj));
                 break;
         }
 
@@ -180,7 +178,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         #now redirect back to the cart
         $cart_url = Mage::getBaseUrl() . 'checkout/cart/';
         Mage::app()->getResponse()->setRedirect($cart_url)->sendResponse();
-        die();
+        return;
 
     }
     //mg host + bitpayipn/index/bitpayipn
@@ -188,7 +186,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     {
        
        #$hash_key = $_REQUEST['hash_key'];
-        if (isset($_POST)):
+        
 
             #include our custom BP2 classes
             #autoloader
@@ -321,7 +319,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                         break;
                 }
             endif; #end of row checker
-        endif;
     }
 
     public function getExtensionVersion()

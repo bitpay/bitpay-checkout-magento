@@ -52,5 +52,4 @@ public function BPC_getInvoiceURL(){
 }
 
 
-} 
-?>
+}
