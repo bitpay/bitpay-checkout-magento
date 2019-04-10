@@ -20,5 +20,3 @@ function BPC_getButtons(){
 
 
 }
-
-?>

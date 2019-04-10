@@ -7,5 +7,3 @@ class BPC_Client {
     
 }
 }
-
-?>

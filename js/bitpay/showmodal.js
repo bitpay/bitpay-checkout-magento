@@ -8,6 +8,7 @@ function showModal(env){
     jQuery.post( "/showmodal/index/modal", function(data ) {
     jQuery("#bitpaybtn").prop("disabled",true)
        var is_paid = false
+       console.log('data',data)
        var response = JSON.parse(data)
         window.addEventListener("message", function (event) {
             payment_status = event.data.status;

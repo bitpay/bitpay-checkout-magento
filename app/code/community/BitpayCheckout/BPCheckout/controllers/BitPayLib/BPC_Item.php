@@ -17,5 +17,3 @@ function BPC_getItem(){
 }
 
 }
-
-?>

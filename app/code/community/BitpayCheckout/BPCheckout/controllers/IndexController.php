@@ -6,9 +6,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 {
     public function indexAction()
     {
-        echo '<h2>You should not be here.</h2>';
-        die();
-
+         #nothing to do
     }
 
     public function redirectAction($modal = null, $orderId = null)
@@ -113,9 +111,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 $modal_obj->invoiceID = $invoiceID;
                 setcookie('use_modal', $use_modal, time() + (86400 * 30), "/"); // 86400 = 1 day
                 setcookie('env', $env, time() + (86400 * 30), "/"); // 86400 = 1 day
-                echo json_encode($modal_obj);
-
-                return;
+                return $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($modal_obj));
                 break;
         }
 
