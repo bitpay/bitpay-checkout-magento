@@ -2,7 +2,7 @@
 <config>
   <modules>
     <BitpayCheckout_BPCheckout>
-      <version>3.0.0</version>
+      <version>3.0.3.7</version>
     </BitpayCheckout_BPCheckout>
   </modules>
  
