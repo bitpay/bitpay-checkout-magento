@@ -237,6 +237,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             else:
                 $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
             endif;
+            $bitpay_ipn_mapping = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_ipn_mapping');
             $config = new BPC_Configuration($bitpay_token, $env);
             #check the hash
             #verify the hash before moving on
@@ -245,7 +246,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             #if(!$config->BPC_checkHash($orderid,$hash_key)):
             #    die();
             #endif;
-
             #double check to make sure this is value
             $params = new stdClass();
             $params->extension_version = $this->getExtensionVersion();
@@ -259,14 +259,34 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             $invoice_status = $orderStatus->data->status;
 
             switch ($event['name']) {
+                case 'invoice_completed':
+                if ($invoice_status == 'complete'):
+                    #load the order to update
+                    $order = new Mage_Sales_Model_Order();
+                    $order->loadByIncrementId($orderid);
+
+                    $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> status has changed to Completed.',
+                        Mage_Sales_Model_Order::STATE_PROCESSING);
+                    $order->save();
+                    $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
+                    return true;
+                endif;
+                break;
+
                 case 'invoice_confirmed':
                     if ($invoice_status == 'confirmed'):
                         #load the order to update
                         $order = new Mage_Sales_Model_Order();
                         $order->loadByIncrementId($orderid);
-
+                        
+                        if($bitpay_ipn_mapping != 'processing'):
                         $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> processing has been completed.',
-                            Mage_Sales_Model_Order::STATE_COMPLETE);
+                            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
+                        else:
+                            $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> processing has been completed.',
+                            Mage_Sales_Model_Order::STATE_PROCESSING);
+                        endif;
+                        
                         $order->save();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
                         return true;
@@ -276,11 +296,11 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
                 case 'invoice_paidInFull':
                     if ($invoice_status == 'paid'):
                         #load the order to update
-                        $order = new Mage_Sales_Model_Order();
 
+                        $order = new Mage_Sales_Model_Order();
                         $order->loadByIncrementId($orderid);
                         $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> is processing.',
-                            Mage_Sales_Model_Order::STATE_PROCESSING);
+                            Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
                         return true;
                     endif;
@@ -293,8 +313,7 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
                         $order->loadByIncrementId($orderid);
 
-                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> has become invalid because of network congestion.  Order will automatically update when the status changes.',
-                            Mage_Sales_Model_Order::STATE_PROCESSING);
+                        $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> has become invalid because of network congestion.  Order will automatically update when the status changes.');
                         $order->save();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
                         return true;
@@ -335,6 +354,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
     public function getExtensionVersion()
     {
-        return 'BitPay_Checkout_Magento1_3.0.3';
+        return 'BitPay_Checkout_Magento1_3.0.4';
     }
 }

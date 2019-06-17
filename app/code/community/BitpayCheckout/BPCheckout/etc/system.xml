@@ -75,6 +75,17 @@
               <comment><![CDATA[Select <b>Test</b> for testing the plugin, <b>Production</b> when you are ready to go live.]]></comment>
             </bitpay_endpoint>
 
+            <bitpay_ipn_mapping translate="label">
+              <label>Status mapping - BitPay invoice / Magento order</label>
+              <frontend_type>select</frontend_type>
+              <source_model>BitpayCheckout_BPCheckout_Ipn</source_model>
+              <show_in_default>1</show_in_default>
+              <show_in_website>1</show_in_website>
+              <show_in_store>0</show_in_store>
+              <sort_order>3</sort_order>
+              <comment><![CDATA[Map the BitPay “confirmed” invoice status to the preferred Magento order status, based on the transaction speed you have selected in your BitPay <a target = "_blank" href = "https://bitpay.com/dashboard/settings/edit/order">dashboard</a>]]></comment>
+            </bitpay_ipn_mapping>
+
           
             <bitpay_ux translate="label">
               <label>Checkout Flow</label>
