@@ -45,8 +45,34 @@ function getCookie(name)
     return (value != null) ? unescape(value[1]) : null;
   }
  
+  function setCookie(cname, cvalue, exMins) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exMins*60*1000));
+    var expires = "expires="+d.toUTCString();  
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+setCookie('cookieNameToDelete','',0) 
 if(window.location.pathname == '/checkout/onepage/success/' && getCookie('flow') !== -1){
     $j(".main").css('opacity','0.3')
        showModal(getCookie('env'))
+
+}
+
+//autofill the guest info
+if(window.location.pathname.indexOf('sales/guest/form') != -1){
+  //autofill form
+  setTimeout(function(){ 
+    $j("#oar_order_id").val(getCookie("oar_order_id"))
+    $j("#oar_billing_lastname").val(getCookie("oar_billing_lastname"))
+    $j("#oar_email").val(getCookie("oar_email"))
+    setCookie("oar_order_id",'',0)
+    setCookie("oar_billing_lastname",'',0)
+    setCookie("oar_email",'',0)
+  }, 
+    1500);
+   
+    
+ 
 
 }

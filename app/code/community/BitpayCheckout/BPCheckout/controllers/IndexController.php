@@ -43,7 +43,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
             $bitpay_token = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_prodtoken');
         endif;
         $config = new BPC_Configuration($bitpay_token, $env);
-
         //create an item, should be passed as an object'
         $params = new stdClass();
         $params->extension_version = $this->getExtensionVersion();
@@ -51,27 +50,40 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $params->currency = $order->base_currency_code; //set as needed
 
         #buyers email
-        $bitpay_capture_email = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_capture_email');
         $current_user = Mage::getSingleton("customer/session");
+        $buyerInfo = new stdClass();
+        $guest_login = true;
+        $params->orderId = trim($orderId);
         if ($current_user->isLoggedIn()) {
-            if ($bitpay_capture_email == 1):
-                #$current_user = Mage::getSingleton('customer/session')->getCustomer();
+                $guest_login = false;
                 $current_user = $current_user->getCustomer();
-
-                $buyerInfo = new stdClass();
                 $buyerInfo->name = $current_user->getName();
                 $buyerInfo->email = $current_user->getEmail();
                 $params->buyer = $buyerInfo;
 
-            endif;
+        }else{
+            #guest info
+            $buyerInfo->name = $order->customer_firstname.' '.$order->customer_lastname;
+            $buyerInfo->email = $order->customer_email;
+            $params->buyer = $buyerInfo;
+            #set some info for guest checkout
+            setcookie('oar_order_id', $params->orderId, time() + (86400 * 30), "/"); // 86400 = 1 day
+            setcookie('oar_billing_lastname', $order->customer_lastname, time() + (86400 * 30), "/"); // 86400 = 1 day
+            setcookie('oar_email', $order->customer_email, time() + (86400 * 30), "/"); // 86400 = 1 day
+
+
         }
-        $params->orderId = trim($orderId);
-        $params->redirectURL = Mage::getBaseUrl() . 'sales/order/view/order_id/' . $shortOrderID . '/';
+       
+        if($guest_login):
+            $params->redirectURL = Mage::getBaseUrl() . 'sales/guest/form/?orderId='.$params->orderId.'&lastname='.$order->customer_lastname.'&email='.$order->customer_email;
+        else:
+            $params->redirectURL = Mage::getBaseUrl() . 'sales/order/view/order_id/' . $shortOrderID . '/';
+        endif;
+        
         #ipn
         $hash_key = $config->BPC_generateHash($params->orderId);
         $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn?hash_key=' . $hash_key;
         $params->extendedNotifications = true;
-        $params->transactionSpeed = 'medium';
         $params->acceptanceWindow = 1200000;
 
         $cartFix = Mage::getBaseUrl() . 'cartfix/index/renewcart/orderid/' . $orderId;
@@ -354,6 +366,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
 
     public function getExtensionVersion()
     {
-        return 'BitPay_Checkout_Magento1_3.0.4';
+        return 'BitPay_Checkout_Magento1_3.0.5';
     }
 }
