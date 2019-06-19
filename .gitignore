@@ -2,3 +2,11 @@
 app/code/.DS_Store
 app/code/community/.DS_Store
 app/code/community/BitpayCheckout/.DS_Store
+app/.DS_Store
+app/design/.DS_Store
+app/design/frontend/.DS_Store
+app/design/frontend/base/.DS_Store
+app/design/frontend/base/default/.DS_Store
+app/design/frontend/base/default/template/.DS_Store
+app/design/frontend/base/default/template/checkout/onepage/.DS_Store
+app/design/frontend/base/default/template/checkout/.DS_Store
