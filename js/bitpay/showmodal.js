@@ -52,9 +52,7 @@ function getCookie(name)
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-setCookie('cookieNameToDelete','',0) 
-if(window.location.pathname == '/checkout/onepage/success/' && getCookie('flow') !== -1){
-    $j(".main").css('opacity','0.3')
+if(window.location.pathname == '/checkout/onepage/success/' && getCookie('use_modal') == 'modal'){
        showModal(getCookie('env'))
 
 }
