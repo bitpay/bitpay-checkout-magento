@@ -83,7 +83,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $hash_key = $config->BPC_generateHash($params->orderId);
         $params->notificationURL = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB, true) . 'bitpayipn/index/bitpayipn?hash_key=' . $hash_key;
         $params->extendedNotifications = true;
-        $params->acceptanceWindow = 1200000;
 
         $cartFix = Mage::getBaseUrl() . 'cartfix/index/renewcart/orderid/' . $orderId;
         $item = new BPC_Item($config, $params);
@@ -391,6 +390,6 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
     }
     public function getExtensionVersion()
     {
-        return 'BitPay_Checkout_Magento1_3.1.0';
+        return 'BitPay_Checkout_Magento1_3.1.1';
     }
 }
