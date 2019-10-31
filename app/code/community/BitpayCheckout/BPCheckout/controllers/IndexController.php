@@ -103,8 +103,15 @@ class BitpayCheckout_BPCheckout_IndexController extends Mage_Core_Controller_Fro
         $prefix = (string) Mage::getConfig()->getTablePrefix();
         $table_name = $prefix . 'bitpay_transactions';
         $write = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $sql = "INSERT INTO $table_name (order_id,transaction_id,transaction_status) VALUES ('" . $orderId . "','" . $invoiceID . "','new')";
-        $write->query($sql);
+        $sql = "INSERT INTO $table_name (order_id,transaction_id,transaction_status) VALUES (:orderId,:invoiceId,:invoiceStatus)";
+       
+
+$binds = array(
+'orderId'    => $orderId,
+'invoiceId'   =>$invoiceID,
+'invoiceStatus' => "new",
+);
+$write->query($sql, $binds);
 
         switch ($use_modal) {
             default:
