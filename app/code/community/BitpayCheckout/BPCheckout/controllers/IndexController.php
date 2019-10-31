@@ -240,9 +240,12 @@ $write->query($sql, $binds);
         $read = Mage::getSingleton('core/resource')->getConnection('core_read');
         $prefix = (string) Mage::getConfig()->getTablePrefix();
         $table_name = $prefix . 'bitpay_transactions';
-        $sql = "SELECT * FROM $table_name WHERE order_id = '$orderid' AND transaction_id = '$order_invoice' ";
-        $result = $read->query($sql);
-        $row = $result->fetch();
+        
+        $sql = "SELECT * FROM $table_name WHERE order_id = :order_id AND transaction_id = :transaction_id";
+        $binds    = array('order_id' => $orderid,'transaction_id'=>$order_invoice);
+        $results  = $read->query($sql, $binds);
+        $row = $results->fetch();
+        
 
         if ($row): #there is a record
             $env = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_endpoint');
@@ -254,13 +257,7 @@ $write->query($sql, $binds);
             endif;
             $bitpay_ipn_mapping = Mage::getStoreConfig('payment/bitpaycheckout/bitpay_ipn_mapping');
             $config = new BPC_Configuration($bitpay_token, $env);
-            #check the hash
-            #verify the hash before moving on
-
-            #disable this for now so new installs can start creating
-            #if(!$config->BPC_checkHash($orderid,$hash_key)):
-            #    die();
-            #endif;
+           
             #double check to make sure this is value
             $params = new stdClass();
             $params->extension_version = $this->getExtensionVersion();
