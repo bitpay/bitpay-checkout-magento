@@ -394,6 +394,6 @@ $write->query($sql, $binds);
     }
     public function getExtensionVersion()
     {
-        return 'BitPay_Checkout_Magento1_3.1.4';
+        return 'BitPay_Checkout_Magento1_3.1.5';
     }
 }
