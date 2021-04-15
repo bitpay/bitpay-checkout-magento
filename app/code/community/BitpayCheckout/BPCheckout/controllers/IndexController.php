@@ -267,7 +267,7 @@ $write->query($sql, $binds);
 
             $invoice = new BPC_Invoice($item); //this creates the invoice with all of the config params
 
-            $orderStatus = json_decode($invoice->BPC_checkInvoiceStatus($order_invoice));
+            $orderStatus = json_decode($invoice->BPC_checkInvoiceStatus($order_invoice,$bitpay_token));
             $invoice_status = $orderStatus->data->status;
 
             switch ($event['name']) {

@@ -9,13 +9,12 @@ class BPC_Invoice
 
     }
 
-    public function BPC_checkInvoiceStatus($orderID)
+    public function BPC_checkInvoiceStatus($orderID,$bitpay_token)
     {
 
         $post_fields = ($this->item->item_params);
-
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://' . $this->item->invoice_endpoint . '/' . $post_fields->invoiceID);
+        curl_setopt($ch, CURLOPT_URL, 'https://' . $this->item->invoice_endpoint . '/' . $post_fields->invoiceID.'?token='.$bitpay_token);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $result = curl_exec($ch);
