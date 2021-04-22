@@ -282,6 +282,7 @@ $write->query($sql, $binds);
                             Mage_Sales_Model_Order::STATE_PROCESSING);
                         $order->save();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
+                        http_response_code(200);
                         return true;
                     endif;
                     break;
@@ -304,6 +305,7 @@ $write->query($sql, $binds);
                         $order->save();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
                         $this->addInvoice($order, $comment);
+                        http_response_code(200);
                         return true;
                     endif;
                     break;
@@ -317,6 +319,7 @@ $write->query($sql, $binds);
                         $order->addStatusHistoryComment($comment,
                             Mage_Sales_Model_Order::STATE_PENDING_PAYMENT);
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
+                        http_response_code(200);
                         return true;
                     endif;
                     break;
@@ -331,6 +334,7 @@ $write->query($sql, $binds);
                         $order->addStatusHistoryComment('BitPay Invoice <a href = "http://' . $item->endpoint . '/dashboard/payments/' . $order_invoice . '" target = "_blank">' . $order_invoice . '</a> has become invalid because of network congestion.  Order will automatically update when the status changes.');
                         $order->save();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
+                        http_response_code(200);
                         return true;
                     endif;
                     break;
@@ -344,6 +348,7 @@ $write->query($sql, $binds);
 
                         $order->delete();
                         $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
+                        http_response_code(200);
                         return true;
                     endif;
                     break;
@@ -360,7 +365,7 @@ $write->query($sql, $binds);
 
                     $order->save();
                     $this->updateBPCTransactions($table_name, $invoice_status, $orderid, $order_invoice);
-
+                    http_response_code(200);
                     return true;
                     break;
             }
