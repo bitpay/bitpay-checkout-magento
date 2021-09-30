@@ -53,7 +53,7 @@
     <?php endif; ?>
     <?php if ($_code == 'bitpaycheckout'):$currency_mark = 'bitpay/bitpay-currency-mark-std'?>
         
-        <label for="p_method_<?php echo $_code ?>"><span style = "float:left;"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?></span><img style = "width:25%;margin-left:10px;" src="<?php echo $this->getSkinUrl('images/'.$currency_mark.'.svg') ?>" alt="<?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?>" />  <?php echo $this->getMethodLabelAfterHtml($_method) ?></label>
+        <label for="p_method_<?php echo $_code ?>"><span style = "float:left;"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?></span><img style = "width:30%;margin-left:10px;" src="//bitpay.com/cdn/merchant-resources/bitpay-accepted-card-group.svg" alt="<?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?>" />  <?php echo $this->getMethodLabelAfterHtml($_method) ?></label>
     <?php else:?>
         <label for="p_method_<?php echo $_code ?>"><?php echo $this->escapeHtml($this->getMethodTitle($_method)) ?> <?php echo $this->getMethodLabelAfterHtml($_method) ?></label>
 
